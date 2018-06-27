@@ -1,0 +1,239 @@
+[colors]
+background = #222
+background-alt = #444
+foreground = #dfdfdf
+foreground-alt = #555
+primary = #ffb52a
+secondary = #e60053
+alert = #bd2c40
+
+[bar/bottom]
+width = 100%
+height = 40
+radius = 4.0
+fixed-center = false
+background = ${colors.background}
+foreground = ${colors.foreground}
+line-size = 3
+line-color = #f00
+border-size = 0
+border-color = #00000000
+padding-left = 0
+padding-right = 0
+module-margin-left = 1
+module-margin-right = 2
+font-0 = Hack-Regular:size=16
+font-1 = FontAwesome:size=16
+modules-left = i3 mpd
+modules-center = xbacklight pulseaudio filesystem wlan 
+modules-right = cpu temperature memory battery date
+bottom = true
+tray-position = right
+tray-padding = 1
+wm-restack = i3
+override-redirect = false
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
+cursor-click = pointer
+cursor-scroll = pointer
+
+[module/xwindow]
+type = internal/xwindow
+label = %title:0:30:...%
+
+[module/filesystem]
+type = internal/fs
+interval = 30
+mount-0 = /
+label-mount-0 = SSD
+mount-1 = /media/simon/0123-45671
+mount-2 = /media/simon/Samsung_T5
+format-mounted-suffix = 
+label-mounted = %used% / %total%
+label-unmounted =
+
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+index-sort = true
+wrapping-scroll = false
+label-mode-padding = 1
+label-mode-foreground = #000
+label-mode-background = ${colors.primary}
+label-focused = %index%
+label-focused-background = ${colors.background-alt}
+label-focused-underline= ${colors.primary}
+label-focused-padding = 1
+label-unfocused = %index%
+label-unfocused-padding = 1 
+label-visible = %index%
+label-visible-background = ${self.label-focused-background}
+label-visible-underline = ${self.label-focused-underline}
+label-visible-padding = ${self.label-focused-padding}
+label-urgent = %index%
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+
+[module/mpd]
+type = internal/mpd
+format-online = <icon-prev> <icon-stop> <toggle> <icon-next> <label-song>
+icon-prev = 
+icon-stop = 
+icon-play =  
+icon-pause = 
+icon-next = 
+label-song-maxlen = 20
+label-song-ellipsis = true
+
+[module/xbacklight]
+type = internal/xbacklight
+format = <label> <bar>
+label = 
+bar-width = 6
+bar-indicator = |
+bar-indicator-foreground = #fff
+bar-indicator-font = 2
+bar-fill = ─
+bar-fill-font = 2
+bar-fill-foreground = #9f78e1
+bar-empty = ─
+bar-empty-font = 2
+bar-empty-foreground = ${colors.foreground-alt}
+
+[module/backlight-acpi]
+inherit = module/xbacklight
+type = internal/backlight
+card = intel_backlight
+
+[module/cpu]
+type = internal/cpu
+interval = 10
+format = <label> <ramp-coreload>
+format-prefix = 
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = 
+label = %percentage:2%%
+ramp-coreload-0 = ▁
+ramp-coreload-1 = ▂
+ramp-coreload-2 = ▃
+ramp-coreload-3 = ▄
+ramp-coreload-4 = ▅
+ramp-coreload-5 = ▆
+ramp-coreload-6 = ▇
+ramp-coreload-7 = █
+
+[module/memory]
+type = internal/memory
+interval = 30
+format-prefix = 
+format-prefix-foreground = ${colors.foreground-alt}
+label = %percentage_used%%
+
+[module/wlan]
+type = internal/network
+interface = wlp1s0
+interval = 3.0
+format-connected-prefix = 
+format-connected = <label-connected>
+format-connected-underline = 
+label-connected = %upspeed%%downspeed%
+format-disconnected =
+
+[module/date]
+type = internal/date
+interval = 10
+date =
+date-alt = " %Y-%m-%d"
+time = %H:%M
+time-alt = 
+format-prefix = 
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = 
+label = %date% %time%
+
+[module/pulseaudio]
+type = internal/pulseaudio
+format-volume = <label-volume> <bar-volume>
+label-volume =  
+label-volume-foreground = ${root.foreground}
+label-muted = " muted"
+label-muted-foreground = #666
+bar-volume-width = 6
+bar-volume-foreground-0 = #55aa55
+bar-volume-foreground-1 = #55aa55
+bar-volume-foreground-2 = #55aa55
+bar-volume-foreground-3 = #55aa55
+bar-volume-foreground-4 = #55aa55
+bar-volume-foreground-5 = #f5a70a
+bar-volume-foreground-6 = #ff5555
+bar-volume-gradient = false
+bar-volume-indicator = |
+bar-volume-indicator-font = 2
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+[module/alsa]
+type = internal/alsa
+format-volume = <label-volume> <bar-volume>
+label-volume = 
+label-volume-foreground = ${root.foreground}
+format-muted-prefix = ""
+format-muted-foreground = ${colors.foreground-alt}
+label-muted = sound muted
+bar-volume-width = 6
+bar-volume-foreground-0 = #55aa55
+bar-volume-foreground-1 = #55aa55
+bar-volume-foreground-2 = #55aa55
+bar-volume-foreground-3 = #55aa55
+bar-volume-foreground-4 = #55aa55
+bar-volume-foreground-5 = #f5a70a
+bar-volume-foreground-6 = #ff5555
+bar-volume-gradient = false
+bar-volume-indicator = |
+bar-volume-indicator-font = 2
+bar-volume-fill = ─
+bar-volume-fill-font = 2
+bar-volume-empty = ─
+bar-volume-empty-font = 2
+bar-volume-empty-foreground = ${colors.foreground-alt}
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 90
+format-charging = <label-charging>
+format-charging-prefix = 
+format-discharging = <ramp-capacity> <label-discharging>
+format-full-prefix = 
+format-full-prefix-foreground = #FFFF00
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-foreground = ${colors.foreground-alt}
+
+[module/temperature]
+interval = 5
+type = internal/temperature
+thermal-zone = 0
+warn-temperature = 65
+format = <label>
+format-underline = 
+format-warn = <label-warn>
+format-warn-foreground = #FF0000
+format-warn-underline =
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = ${colors.secondary}
+
+[settings]
+screenchange-reload = true
+
+[global/wm]
+margin-top = 10
+margin-bottom = 10

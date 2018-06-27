@@ -1,0 +1,14 @@
+music_directory       "~/Music"
+playlist_directory    "~/.mpd/playlists"
+db_file               "~/.mpd/tag_cache"
+log_file              "~/.mpd/mpd.log"
+pid_file              "~/.mpd/pid"
+state_file            "~/.mpd/state"
+
+bind_to_address       "localhost"
+port                  "6600"
+
+audio_output {
+  type "pulse"
+  name "My Pulse Output"
+}
