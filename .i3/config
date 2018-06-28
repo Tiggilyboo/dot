@@ -1,6 +1,6 @@
 set $mod Mod1
 
-exec --no-startup-id xrandr --dpi 192
+exec_always --no-startup-id "xrandr --dpi 192"
 font pango:Hack, FontAwesome 9
 
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -109,8 +109,26 @@ bar {
   mode invisible
 }
 
+# brightness
+bindsym XF86MonBrightnessUp exec backlight up 
+bindsym XF86MonBrightnessDown exec backlight down
+bindsym XF86KbdBrightnessUp exec kbdbacklight up
+bindsym XF86KbdBrightnessDown exec kbdbacklight down
+
+# media
+bindsym XF86AudioPlay exec --no-startup-id mpc toggle
+bindsym XF86AudioPause exec --no-startup-id mpc pause
+bindsym XF86AudioStop exec --no-startup-id mpc stop
+bindsym XF86AudioNext exec --no-startup-id mpc next
+bindsym XF86AudioPrev exec --no-startup-id mpc prev
+bindsym XF86AudioRaiseVolume exec --no-startup-id mpc volume +5
+bindsym XF86AudioLowerVolume exec --no-startup-id mpc volume -5
+bindsym XF86AudioMute exec --no-startup-id mpc volume 0
+
 # startup
-exec --no-startup-id mpd
+exec_always --no-startup-id xahf
+exec_always --no-startup-id xmodmap ~/.Xmodmap
+exec_always --no-startup-id mpd
 exec --no-startup-id nm-applet
 exec --no-startup-id nitrogen --restore
 exec --no-startup-id killall polybar; polybar bottom -r
