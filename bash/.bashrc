@@ -59,7 +59,7 @@ unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
+xterm*|alacritty*)
     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
     ;;
 *)
@@ -70,9 +70,6 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -99,20 +96,20 @@ PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # Golang
 export GOPATH=/go
-export GOROOT=/usr/local/go
+export GOROOT=/usr/go
 export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:$GOPATH/bin
 
 # Rust
 export PATH="$HOME/.cargo/bin:$PATH"
-export RUST_SRC_PATH=$HOME/Source/rust/src
+export RUST_SRC_PATH=$HOME/source/rust/src
 
-# HDPI 
+# HIDPI 
+export WINIT_HIDPI_FACTOR=1.0
 export GDK_SCALE=2
 export GDK_DPI_SCALE=0.5
-export CHROMIUM_USER_FLAGS="--force-device-scale-factor=2"
 
-if [ "$GDMSESSION" = "sway" ]; then 
+if [ "$(tty)" = "/dev/tty1" ]; then
   GDK_BACKEND=wayland
   CLUTTER_BACKEND=wayland
   QT_QPA_PLATFORM=wayland-egl
@@ -120,4 +117,6 @@ if [ "$GDMSESSION" = "sway" ]; then
   ECORE_EVAS_ENGINE=wayland_egl
   ELM_ENGINE=wayland_egl
   SDL_VIDEODRIVER=wayland
+  sway
+  exit 0
 fi

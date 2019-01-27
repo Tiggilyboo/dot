@@ -1,6 +1,5 @@
 set $mod Mod1
 
-exec_always --no-startup-id "xrdb ~/.Xresources"
 font xft:Hack, FontAwesome 9
 default_border pixel 3
 
@@ -8,7 +7,8 @@ default_border pixel 3
 floating_modifier $mod normal
 
 # start a terminal
-bindsym $mod+Return exec gnome-terminal 
+set $terminal env WAYLAND_DISPLAY= alacritty
+bindsym $mod+Return exec $terminal
 
 # start the vimb browser
 bindsym $mod+w exec vimb
@@ -21,7 +21,7 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec
 bindsym $mod+d exec $menu
 
 # background
-output * bg /home/simon/Pictures/Wallpapers/New-Zealand-Wallpapers.jpg fill
+output * bg /home/simon/wallpapers/national_park.jpg fill
 output eDP-1 scale 2 res 2560x1700
 output HDMI-1 scale 1 res 1280x720
 
@@ -59,8 +59,6 @@ bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -116,14 +114,8 @@ client.focused_inactive #333333 #333333 #FFFFFF #000000 #333333
 client.focused #222222 #222222 #FFFFFF #222222 #222222
 
 # status bar
-# bar {
-#  position bottom
-#  font Hack 9
-#  colors {
-#    statusline #eeeeee
-#    background #333333
-#    inactive_workspace #32323200 #32323200 #5c5c5c
-#  }
+#bar {
+  #swaybar_command waybar.sh
 #}
 
 # gaps
@@ -149,9 +141,10 @@ bindsym XF86AudioLowerVolume exec --no-startup-id mpc volume -5
 bindsym XF86AudioMute exec --no-startup-id mpc volume 0
 
 # startup
-exec_always --no-startup-id "xmodmap ~/.Xmodmap"
-exec_always --no-startup-id mpd
-exec --no-startup-id nm-applet
+#exec_always --no-startup-id mpd
+#exec --no-startup-id nm-applet
 exec_always --no-startup-id "redshift -m wayland -l "-41.28:174.77"
+
+exec waybar
 
 include @sysconfdir@/sway/config.d/

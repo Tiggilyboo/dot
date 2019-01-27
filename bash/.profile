@@ -11,8 +11,9 @@ fi
 
 # set PATH so it includes user's private bin directories
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+PATH="$HOME/.cargo/bin:$PATH"
 
-if [ "$GDMSESSION" = "sway" ]; then 
+if [ "$(tty)" = "/dev/tty1" ]; then
   GDK_BACKEND=wayland
   CLUTTER_BACKEND=wayland
   QT_QPA_PLATFORM=wayland-egl
@@ -22,4 +23,3 @@ if [ "$GDMSESSION" = "sway" ]; then
   SDL_VIDEODRIVER=wayland
 fi
 
-export PATH="$HOME/.cargo/bin:$PATH"

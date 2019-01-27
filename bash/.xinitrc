@@ -11,9 +11,4 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# remap
-exec xmodmap ~/.Xmodmap
-
-# dpi
-exec xrandr --dpi 192
-xrdb -merge ~/.Xresources
+exec sway
