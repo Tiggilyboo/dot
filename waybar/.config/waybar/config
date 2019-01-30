@@ -1,11 +1,9 @@
 {
     "layer": "top", // Waybar at top layer
-    //"height": 30,
-    //"width": 100,
     "position": "bottom", // Waybar at the bottom of your screen
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["network", "cpu", "memory", "battery", "clock"],
+    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "clock"],
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },
@@ -30,24 +28,23 @@
         "format-icons": ["", "", "", "", ""]
     },
     "network": {
-        //"interface": "wlp1s0", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
+        "format-wifi": "{signalStrength}% ",
         "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-disconnected": "Disconnected ⚠"
+        "format-disconnected": "d/c ⚠"
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-bluetooth": "{volume}% {icon}",
+        "format-muted": "",
+        "format-icons": {
+            "headphones": "",
+            "handsfree": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol"
     }
-   // "pulseaudio": {
-   //     "format": "{volume}% {icon}",
-   //     "format-bluetooth": "{volume}% {icon}",
-   //     "format-muted": "",
-   //     "format-icons": {
-   //         "headphones": "",
-   //         "handsfree": "",
-   //         "headset": "",
-   //         "phone": "",
-   //         "portable": "",
-   //         "car": "",
-   //         "default": ["", ""]
-   //     },
-   //     "on-click": "alacritty -e alsamixer"
-   // },
 }

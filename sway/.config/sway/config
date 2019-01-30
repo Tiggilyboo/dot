@@ -11,6 +11,7 @@ set $terminal env WAYLAND_DISPLAY= alacritty
 bindsym $mod+Return exec $terminal
 
 # start the vimb browser
+for_window [class="(?i)pavucontrol"] floating enable
 bindsym $mod+w exec vimb
 
 # kill focused window

@@ -6,3 +6,6 @@ waybar_command
 mode
 GDK_BACKEND
 xwayland
+for_window
+for_window
+pavucontrol
