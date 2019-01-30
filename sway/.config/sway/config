@@ -7,8 +7,8 @@ default_border pixel 3
 floating_modifier $mod normal
 
 # start a terminal
-set $terminal env WAYLAND_DISPLAY= alacritty
-bindsym $mod+Return exec $terminal
+exec "env WAYLAND_DISPLAY="
+bindsym $mod+Return exec alacritty
 
 # start the vimb browser
 for_window [class="(?i)pavucontrol"] floating enable

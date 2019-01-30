@@ -23,3 +23,4 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   SDL_VIDEODRIVER=wayland
 fi
 
+export EDITOR=nvim
