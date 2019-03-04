@@ -95,14 +95,14 @@ fi
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # Golang
-export GOPATH=/go
-export GOROOT=/usr/go
+export GOPATH=$HOME/source/go
+export GOROOT=/usr/lib/go
 export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:$GOPATH/bin
 
 # Rust
 export PATH="$HOME/.cargo/bin:$PATH"
-export RUST_SRC_PATH=$HOME/source/rust/src
+export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src
 
 # HIDPI 
 export WINIT_HIDPI_FACTOR=1.0
@@ -118,5 +118,6 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   ELM_ENGINE=wayland_egl
   SDL_VIDEODRIVER=wayland
   sway
+  bash $HOME/netstart.sh
   exit 0
 fi

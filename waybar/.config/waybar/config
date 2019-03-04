@@ -30,7 +30,8 @@
     "network": {
         "format-wifi": "{signalStrength}% ",
         "format-ethernet": "{ifname}: {ipaddr}/{cidr} ",
-        "format-disconnected": "d/c ⚠"
+        "format-disconnected": "d/c",
+        "on-click": "alacritty -e 'netctl start $(netctl list)'"
     },
     "pulseaudio": {
         "format": "{volume}% {icon}",
@@ -45,6 +46,8 @@
             "car": "",
             "default": ["", ""]
         },
-        "on-click": "pavucontrol"
+        "on-click": "pavucontrol",
+        "on-scroll-up": "pamixer -i 5",
+        "on-scroll-down": "pamixer -d 5"
     }
 }

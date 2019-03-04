@@ -6,31 +6,31 @@ call plug#begin(mpwd)
 	Plug 'tpope/vim-rhubarb'           " Depenency for fugitive
   Plug 'ctrlpvim/ctrlp.vim'          " Dependancy for tagbar
 
-  Plug 'tpope/vim-fugitive'					 " git
-	Plug 'tpope/vim-surround'					 " quoting
-  Plug 'sebdah/vim-delve'						 " go debugger
-	Plug 'rbgrouleff/bclose.vim'			 " close buffer without window
+  Plug 'tpope/vim-fugitive'					      " git
+	Plug 'tpope/vim-surround'					      " quoting
+	Plug 'rbgrouleff/bclose.vim'			      " close buffer without window
   Plug 'majutsushi/tagbar'
   Plug 'neomake/neomake'
-
+  
   " themes
   Plug 'vim-airline/vim-airline'
   Plug 'joshdick/onedark.vim'
   
-  " ale
-  Plug 'w0rp/ale'
+  Plug 'w0rp/ale', { 'for': 'go' }
+  Plug 'sebdah/vim-delve', { 'for': 'go'}	
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }     
+	Plug 'nsf/gocode', { 'rtp': 'vim', 'do': mgocode, 'for': 'go' }    
+	Plug 'zchee/deoplete-go', { 'do': 'make', 'for': 'go' }
+	Plug 'zchee/deoplete-jedi', { 'for': 'go' }
 
- 	Plug 'zchee/vim-go', { 'do': 'make' }                  " go
-	Plug 'nsf/gocode', { 'rtp': 'vim', 'do': mgocode }     " 
-	Plug 'zchee/deoplete-go', { 'do': 'make'}              " 
-	Plug 'zchee/deoplete-jedi'                             " 
-
-  Plug 'leafgarland/typescript-vim', { 'for': 'ts' }     " ts
-  Plug 'lifepillar/pgsql.vim'                            " pgsql
-  Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }     " html / css
-  Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }        " cshtml
-  Plug 'rust-lang/rust.vim', { 'for': 'rs' }             " rust
-  Plug 'plasticboy/vim-markdown'                         " md
+  Plug 'leafgarland/typescript-vim', { 'for': 'ts' } 
+  Plug 'lifepillar/pgsql.vim', { 'for': 'sql' }
+  Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
+  Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }
+  Plug 'vim-syntastic/syntastic', { 'for': 'rs' }
+  Plug 'racer-rust/vim-racer', { 'for': 'rs' }
+  Plug 'rust-lang/rust.vim', { 'for': 'rs' }
+  Plug 'plasticboy/vim-markdown', { 'for': 'md' }
 call plug#end()
 
 " vim
@@ -62,6 +62,7 @@ let g:netrw_browse_split = 4  " Previous window
 let g:netrw_altv = 1
 let g:netrw_winsize = 22
 let g:netrw_liststyle = 3
+let g:netrw_browsex_viewer = "links"
 
 " python pathing
 let pyp2  = systemlist('readlink -f "/usr/bin/python2.7"')[0]
@@ -210,6 +211,14 @@ autocmd FileType html,css,cshtml EmmetInstall
 " markdown
 au! BufRead,BufFilePre,BufNewFile *.markdown setf markdown
 au! BufRead,BufFIlePre,BufNewFile *.md       setf markdown
+
+" epub
+au BufReadCmd *.epub call zip#Browse(expand("<amatch>"))
+
+" rust
+set hidden
+let g:racer_cmd = "/home/user/.cargo/bin/racer"
+let g:racer_experimental_completer = 1
 
 " remaps
 tnoremap <Esc> <C-\><C-n>

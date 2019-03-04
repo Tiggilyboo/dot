@@ -12,6 +12,7 @@ fi
 # set PATH so it includes user's private bin directories
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
+EDITOR=nvim
 
 if [ "$(tty)" = "/dev/tty1" ]; then
   GDK_BACKEND=wayland
@@ -22,5 +23,3 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   ELM_ENGINE=wayland_egl
   SDL_VIDEODRIVER=wayland
 fi
-
-export EDITOR=nvim
