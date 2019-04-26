@@ -1,9 +1,7 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/etc'
-let g:netrw_dirhist_2='/home/simon/.config/waybar'
-let g:netrw_dirhist_3='/home/simon/wallpapers'
-let g:netrw_dirhist_4='/home/simon/.config/waybar'
-let g:netrw_dirhist_5='/home/simon/source/dot/nvim/.config/nvim'
-let g:netrw_dirhist_6='/home/simon/.config/vimb'
-let g:netrw_dirhist_7='/home/simon/source/dot/waybar/.config/waybar'
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/home/simon/source/planck/src'
+let g:netrw_dirhist_2='/home/simon/source/dot'
+let g:netrw_dirhist_3='/home/simon/source/dot/vimb'
+let g:netrw_dirhist_4='/home/simon/source/dot/vimb/.config'
+let g:netrw_dirhist_5='/home/simon/source/dot/vimb/.config/vimb'

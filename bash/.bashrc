@@ -103,6 +103,7 @@ export PATH=$PATH:$GOPATH/bin
 # Rust
 export PATH="$HOME/.cargo/bin:$PATH"
 export RUST_SRC_PATH=$(rustc --print sysroot)/lib/rustlib/src/rust/src
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # HIDPI 
 export WINIT_HIDPI_FACTOR=1.0
@@ -117,7 +118,7 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   ECORE_EVAS_ENGINE=wayland_egl
   ELM_ENGINE=wayland_egl
   SDL_VIDEODRIVER=wayland
+
   sway
-  bash $HOME/netstart.sh
-  exit 0
 fi
+

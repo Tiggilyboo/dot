@@ -23,3 +23,6 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   ELM_ENGINE=wayland_egl
   SDL_VIDEODRIVER=wayland
 fi
+
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

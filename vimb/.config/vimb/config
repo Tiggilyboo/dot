@@ -31,7 +31,7 @@ set incsearch=true
 set default-font=DejaVu Sans
 
 # The font family used as the default for content using monospace font.
-set monospace-font=DejaVu Sans Mono
+set monospace-font=Hack
 
 # The font family used as the default for content using sans-serif font.
 set sans-serif-font=DejaVu Sans

@@ -11,4 +11,5 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+# start the window manager
 exec sway

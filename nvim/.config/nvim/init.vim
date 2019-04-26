@@ -2,7 +2,6 @@
 let mpwd = '/home/simon/.config/nvim/plugged'
 let mgocode =  '/home/simon/.config/nvim/plugged/gocode/nvim/symlink.sh'
 call plug#begin(mpwd)
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 	Plug 'tpope/vim-rhubarb'           " Depenency for fugitive
   Plug 'ctrlpvim/ctrlp.vim'          " Dependancy for tagbar
 
@@ -20,16 +19,13 @@ call plug#begin(mpwd)
   Plug 'sebdah/vim-delve', { 'for': 'go'}	
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }     
 	Plug 'nsf/gocode', { 'rtp': 'vim', 'do': mgocode, 'for': 'go' }    
-	Plug 'zchee/deoplete-go', { 'do': 'make', 'for': 'go' }
-	Plug 'zchee/deoplete-jedi', { 'for': 'go' }
 
   Plug 'leafgarland/typescript-vim', { 'for': 'ts' } 
   Plug 'lifepillar/pgsql.vim', { 'for': 'sql' }
   Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
   Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }
-  Plug 'vim-syntastic/syntastic', { 'for': 'rs' }
-  Plug 'racer-rust/vim-racer', { 'for': 'rs' }
   Plug 'rust-lang/rust.vim', { 'for': 'rs' }
+  Plug 'neoclide/coc.nvim', { 'tag': '*', 'do': './install.sh' }
   Plug 'plasticboy/vim-markdown', { 'for': 'md' }
 call plug#end()
 
@@ -40,7 +36,6 @@ set shiftwidth=2
 set expandtab
 set secure
 set number
-set path+=**
 set wildmenu
 set autoread
 set noshowmode
@@ -205,8 +200,6 @@ let $VTE_VERSION="100"
 set guicursor=
 
 " emmet
-let g:user_emmet_install_global = 0
-autocmd FileType html,css,cshtml EmmetInstall
 
 " markdown
 au! BufRead,BufFilePre,BufNewFile *.markdown setf markdown
@@ -216,9 +209,7 @@ au! BufRead,BufFIlePre,BufNewFile *.md       setf markdown
 au BufReadCmd *.epub call zip#Browse(expand("<amatch>"))
 
 " rust
-set hidden
-let g:racer_cmd = "/home/user/.cargo/bin/racer"
-let g:racer_experimental_completer = 1
+let g:coc_force_debug = 1
 
 " remaps
 tnoremap <Esc> <C-\><C-n>
