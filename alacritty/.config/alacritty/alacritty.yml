@@ -9,7 +9,7 @@ window:
 
   dynamic_padding: true
   decorations: none
-  start_maximized: true
+  startup_mode: "Maximized"
 
 scrolling:
   history: 5000
@@ -43,8 +43,9 @@ font:
 
   use_thin_strokes: false
 
-render_timer: false
-persistent_logging: false
+debug:
+  render_timer: false
+  persistent_logging: false
 
 draw_bold_text_with_bright_colors: true
 

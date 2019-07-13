@@ -1,5 +1,5 @@
-vimb/.config/vimb/queue
-vimb/.config/vimb/search
+./vimb/.config/vimb/queue
+./vimb/.config/vimb/search
 
-nvim/.config/nvim/.netrwhist
+./nvim/.config/nvim/.netrwhist
 
