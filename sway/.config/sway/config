@@ -10,9 +10,9 @@ floating_modifier $mod normal
 exec "env WAYLAND_DISPLAY="
 bindsym $mod+Return exec alacritty
 
-# start the vimb browser
+# start qutebrowser
 for_window [class="(?i)pavucontrol"] floating enable
-bindsym $mod+w exec vimb
+bindsym $mod+w exec qutebrowser
 
 # kill focused window
 bindsym $mod+q kill
