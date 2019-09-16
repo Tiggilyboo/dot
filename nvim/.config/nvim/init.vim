@@ -9,24 +9,27 @@ call plug#begin(mpwd)
 	Plug 'tpope/vim-surround'					      " quoting
 	Plug 'rbgrouleff/bclose.vim'			      " close buffer without window
   Plug 'majutsushi/tagbar'
-  Plug 'neomake/neomake'
+  Plug 'wsdjeg/FlyGrep.vim'
   
   " themes
   Plug 'vim-airline/vim-airline'
   Plug 'joshdick/onedark.vim'
-  
-  Plug 'w0rp/ale', { 'for': 'go' }
-  Plug 'sebdah/vim-delve', { 'for': 'go'}	
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }     
-	Plug 'nsf/gocode', { 'rtp': 'vim', 'do': mgocode, 'for': 'go' }    
 
   Plug 'leafgarland/typescript-vim', { 'for': 'ts' } 
   Plug 'lifepillar/pgsql.vim', { 'for': 'sql' }
   Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
   Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }
   Plug 'rust-lang/rust.vim', { 'for': 'rs' }
-  Plug 'neoclide/coc.nvim', { 'tag': '*', 'do': './install.sh' }
-  Plug 'plasticboy/vim-markdown', { 'for': 'md' }
+  Plug 'OmniSharp/omnisharp-vim'
+
+  " lsp
+  Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
+  Plug 'sourcegraph/go-langserver'
+  Plug 'roxma/nvim-yarp'
+  Plug 'ncm2/ncm2'
+  Plug 'ncm2/ncm2-bufword'
+  Plug 'ncm2/ncm2-path'
+
 call plug#end()
 
 " vim
@@ -69,10 +72,6 @@ let g:python3_host_prog=pyp3
 syntax on
 colorscheme onedark
 
-" deo
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#sources#go#pointer = 1
-
 " ctrlp 
 let g:ctrlp_map = ''
 
@@ -91,52 +90,10 @@ let g:airline_symbols.linenr = ''
 let g:airline_detect_whitespace=0
 let g:airline_section_warning=''
 
-" neomake
-let g:neomake_error_sign   = {'text': '✖', 'texthl': 'NeomakeErrorSign'}
-let g:neomake_warning_sign = {'text': '∆', 'texthl': 'NeomakeWarningSign'}
-let g:neomake_message_sign = {'text': '➤', 'texthl': 'NeomakeMessageSign'}
-let g:neomake_info_sign    = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
-
 " tagbar
 let g:airline#extensions#tabline#show_tabs = 0
-
-" ale
-let g:ale_fix_on_save = 1
-:let g:ale_linters = {
-\    'go': ['goimports', 'go build'],
-\    'markdown': []
-\}
-:let g:ale_fixers = {
-\    'go': ['goimports', 'gofmt'],
-\    'javascript': ['prettier']
-\}
-let g:ale_sign_error = '⤫'
-let g:ale_sign_warning = '⚠'
 let g:airline#extensions#ale#enabled = 1
 
-" go
-let g:neomake_go_gometalinter_maker = {
-\ 'args': [
-\   '--tests',
-\   '--enable-gc',
-\   '--concurrency=3',
-\   '--fast',
-\   '-D', 'aligncheck',
-\   '-D', 'dupl',
-\   '-D', 'gocyclo',
-\   '-D', 'gotype',
-\   '-E', 'misspell',
-\   '-E', 'unused',
-\   '%:p:h',
-\ ],
-\ 'append_file': 0,
-\ 'errorformat':
-\   '%E%f:%l:%c:%trror: %m,' .
-\   '%W%f:%l:%c:%tarning: %m,' .
-\   '%E%f:%l::%trror: %m,' .
-\   '%W%f:%l::%tarning: %m'
-\ }
-let g:neomake_go_enabled_makers = [ 'go', 'gometalinter' ]
 let g:tagbar_type_go = {
 \ 'ctagstype' : 'go',
 \ 'kinds'     : [
@@ -191,15 +148,9 @@ let g:go_metalinter_enabled = [
 \ 'vetshadow'
 \]
 
-" delve
-let g:delve_new_command = "new"
-let g:delve_backend = "native"
-
 " Fixes: https://github.com/neovim/neovim/issues/5990
 let $VTE_VERSION="100"
 set guicursor=
-
-" emmet
 
 " markdown
 au! BufRead,BufFilePre,BufNewFile *.markdown setf markdown
@@ -208,8 +159,29 @@ au! BufRead,BufFIlePre,BufNewFile *.md       setf markdown
 " epub
 au BufReadCmd *.epub call zip#Browse(expand("<amatch>"))
 
-" rust
-let g:coc_force_debug = 1
+" ncm2 settings
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=menuone,noselect,noinsert
+set completefunc=LanguageClient#complete
+set shortmess+=c
+inoremap <c-c> <ESC>
+let ncm2#popup_delay = 5
+let ncm2#complete_length = [[1, 1]]
+let g:ncm2#matcher = 'substrfuzzy'
+
+" lsp
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_serverCommands = {
+      \ 'rust': ['rustup', 'run', 'stable', 'rls'], 
+      \ 'go': ['go-langserver'],
+      \ 'cpp': ['clangd'],
+      \ 'c': ['clangd']
+      \ }
+
+
+" leader key
+let mapleader = ","
+let g:mapleader = ","
 
 " remaps
 tnoremap <Esc> <C-\><C-n>
@@ -222,22 +194,10 @@ nnoremap <leader>w :Bclose<cr>
 nnoremap <C-Up> <Plug>(ale_previous_wrap)
 nnoremap <C-Down> <Plug>(ale_next_wrap)
 nnoremap <F2> :Lexplore<cr>
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+nnoremap <leader>s :FlyGrep<cr>
 
 " commands
 command! -register MakeTags !ctags -R .
-
-" workspaces
-function! DevWorkspace()
-  let g:netrw_list_hide = netrw_gitignore#Hide()
-  normal! gg
-  wincmd l
-  sp
-  wincmd j
-  terminal
-  file Console
-  resize 10
-  
-  wincmd k
-endfunction
-command! -register Dev call DevWorkspace()
-

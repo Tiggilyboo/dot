@@ -107,11 +107,12 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # HIDPI 
 export WINIT_HIDPI_FACTOR=1.0
-export GDK_SCALE=2
-export GDK_DPI_SCALE=0.5
+export GDK_SCALE=1
+export GDK_DPI_SCALE=1
 
 if [ "$(tty)" = "/dev/tty1" ]; then
   GDK_BACKEND=wayland
+  XDG_CURRENT_DESKTOP=Unity
   CLUTTER_BACKEND=wayland
   QT_QPA_PLATFORM=wayland-egl
   QT_WAYLAND_DISABLE_WINDOWDECORATION=1
