@@ -20,6 +20,7 @@ call plug#begin(mpwd)
   Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
   Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }
   Plug 'rust-lang/rust.vim', { 'for': 'rs' }
+  Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
   Plug 'OmniSharp/omnisharp-vim'
 
   " lsp
