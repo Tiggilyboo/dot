@@ -1,6 +1,6 @@
 " plugins
 let mpwd = '/home/simon/.config/nvim/plugged'
-let mgocode =  '/home/simon/.config/nvim/plugged/gocode/nvim/symlink.sh'
+
 call plug#begin(mpwd)
 	Plug 'tpope/vim-rhubarb'           " Depenency for fugitive
   Plug 'ctrlpvim/ctrlp.vim'          " Dependancy for tagbar
@@ -10,26 +10,17 @@ call plug#begin(mpwd)
 	Plug 'rbgrouleff/bclose.vim'			      " close buffer without window
   Plug 'majutsushi/tagbar'
   Plug 'wsdjeg/FlyGrep.vim'
+
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'hrsh7th/nvim-compe'
   
   " themes
   Plug 'vim-airline/vim-airline'
   Plug 'joshdick/onedark.vim'
 
-  Plug 'leafgarland/typescript-vim', { 'for': 'ts' } 
-  Plug 'lifepillar/pgsql.vim', { 'for': 'sql' }
-  Plug 'mattn/emmet-vim', { 'for': ['css', 'html'] }
-  Plug 'adamclerk/vim-razor', { 'for': 'cshtml' }
-  Plug 'rust-lang/rust.vim', { 'for': 'rs' }
-  Plug 'fatih/vim-go', { 'for': 'go', 'do': ':GoUpdateBinaries' }
-  Plug 'OmniSharp/omnisharp-vim'
-
-  " lsp
-  Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-  Plug 'sourcegraph/go-langserver'
-  Plug 'roxma/nvim-yarp'
-  Plug 'ncm2/ncm2'
-  Plug 'ncm2/ncm2-bufword'
-  Plug 'ncm2/ncm2-path'
+  "Plug 'OmniSharp/omnisharp-vim'
+  Plug 'CraneStation/cranelift.vim'
 
 call plug#end()
 
@@ -149,6 +140,18 @@ let g:go_metalinter_enabled = [
 \ 'vetshadow'
 \]
 
+" lsp
+lua require'lspconfig'.bashls.setup{}
+lua require'lspconfig'.clangd.setup{}
+lua require'lspconfig'.gopls.setup{}
+lua require'lspconfig'.html.setup{}
+lua require'lspconfig'.jsonls.setup{}
+lua require'lspconfig'.pyls.setup{}
+lua require'lspconfig'.rust_analyzer.setup{}
+lua require'lspconfig'.texlab.setup{}
+lua require'lspconfig'.vimls.setup{}
+lua require'lspconfig'.yamlls.setup{}
+
 " Fixes: https://github.com/neovim/neovim/issues/5990
 let $VTE_VERSION="100"
 set guicursor=
@@ -159,26 +162,6 @@ au! BufRead,BufFIlePre,BufNewFile *.md       setf markdown
 
 " epub
 au BufReadCmd *.epub call zip#Browse(expand("<amatch>"))
-
-" ncm2 settings
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=menuone,noselect,noinsert
-set completefunc=LanguageClient#complete
-set shortmess+=c
-inoremap <c-c> <ESC>
-let ncm2#popup_delay = 5
-let ncm2#complete_length = [[1, 1]]
-let g:ncm2#matcher = 'substrfuzzy'
-
-" lsp
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_serverCommands = {
-      \ 'rust': ['rustup', 'run', 'stable', 'rls'], 
-      \ 'go': ['go-langserver'],
-      \ 'cpp': ['clangd'],
-      \ 'c': ['clangd']
-      \ }
-
 
 " leader key
 let mapleader = ","
