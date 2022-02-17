@@ -123,3 +123,8 @@ if [ "$(tty)" = "/dev/tty1" ]; then
   sway
 fi
 
+. "$HOME/.cargo/env"
+
+export WASMTIME_HOME="$HOME/.wasmtime"
+export PATH="$WASMTIME_HOME/bin:$PATH"
+
