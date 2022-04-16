@@ -3,7 +3,7 @@
     "position": "bottom", 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["pulseaudio", "backlight", "network", "cpu", "memory", "temperature", "battery", "clock", "tray"],
+    "modules-right": ["pulseaudio", "bluetooth", "backlight", "network", "cpu", "memory", "temperature", "battery", "clock", "tray"],
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
     },
@@ -22,7 +22,9 @@
     "backlight": {
         "device": "intel_backlight",
         "format": "{percent}% {icon}",
-        "format-icons": ["",""]
+        "format-icons": ["",""],
+	"on-scroll-up": "brightnessctl s +1",
+	"on-scroll-down": "brightnessctl s 1-"
     },
     "temperature": {
         "format": "{temperatureC}°C "

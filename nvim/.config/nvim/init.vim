@@ -13,6 +13,9 @@ call plug#begin(mpwd)
 
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'neovim/nvim-lspconfig'
+
+  " autocomplete
+  Plug 'prabirshrestha/asyncomplete.vim'
   
   " themes
   Plug 'vim-airline/vim-airline'
@@ -26,7 +29,7 @@ call plug#begin(mpwd)
   " langs
   Plug 'simrat39/rust-tools.nvim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  "Plug 'OmniSharp/omnisharp-vim'
+  Plug 'OmniSharp/omnisharp-vim'
   Plug 'CraneStation/cranelift.vim'
 call plug#end()
 
@@ -68,7 +71,7 @@ let pyp3  = systemlist('readlink -f "/usr/bin/python3"')[0]
 let g:python3_host_prog=pyp3
 
 " themes
-syntax on
+syntax enable
 colorscheme onedark
 
 " airline
@@ -86,6 +89,45 @@ let g:airline_symbols.linenr = ''
 let g:airline_detect_whitespace=0
 let g:airline_section_warning=''
 
+" omnisharp
+let g:OmniSharp_server_use_mono=1
+let g:OmniSharp_highlighting=2
+augroup omnisharp_commands
+  autocmd!
+
+  " The following commands are contextual, based on the cursor position.
+  autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ofu <Plug>(omnisharp_find_usages)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ofi <Plug>(omnisharp_find_implementations)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>opd <Plug>(omnisharp_preview_definition)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>opi <Plug>(omnisharp_preview_implementations)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ot <Plug>(omnisharp_type_lookup)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>od <Plug>(omnisharp_documentation)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ofs <Plug>(omnisharp_find_symbol)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ofx <Plug>(omnisharp_fix_usings)
+  autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+  autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
+
+  " Navigate up and down by method/property/field
+  autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
+  autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
+  " Find all code errors/warnings for the current solution and populate the quickfix window
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ogcc <Plug>(omnisharp_global_code_check)
+  " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>oca <Plug>(omnisharp_code_actions)
+  autocmd FileType cs xmap <silent> <buffer> <Leader>oca <Plug>(omnisharp_code_actions)
+  " Repeat the last code action performed (does not use a selector)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>o. <Plug>(omnisharp_code_action_repeat)
+  autocmd FileType cs xmap <silent> <buffer> <Leader>o. <Plug>(omnisharp_code_action_repeat)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>o= <Plug>(omnisharp_code_format)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>orn <Plug>(omnisharp_rename)
+
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ore <Plug>(omnisharp_restart_server)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_start_server)
+  autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
+augroup END
 
 " Fixes: https://github.com/neovim/neovim/issues/5990
 let $VTE_VERSION="100"
@@ -116,10 +158,12 @@ require'lspconfig'.vimls.setup{}
 require'lspconfig'.yamlls.setup{}
 
 -- lldb
-local ext_path = '/home/simon/.vscode/extensions/vadimcn.vscode-lldb-1.6.10/'
-local codelldb_path = ext_path .. 'adapter/codelldb'
-local liblldb_path = ext_path .. 'lldb/lib/liblldb.so'
+local ext_path = os.getenv('HOME') .. '/.vscode/extensions/'
+local lldbext_path = ext_path .. 'vadimcn.vscode-lldb-1.6.10/'
+local codelldb_path = lldbext_path .. 'adapter/codelldb'
+local liblldb_path = lldbext_path .. 'lldb/lib/liblldb.so'
 
+-- dap
 local dap = require('dap')
 dap.adapters.lldb = {
   type = 'executable',
@@ -140,8 +184,34 @@ dap.configurations.c = {
     runInTerminal = false,
   },
 }
-dap.configurations.rust = dap.configurations.c
+dap.configurations.rs = dap.configurations.c
 dap.configurations.cpp = dap.configurations.c
+
+-- unity
+local unity_path = ext_path .. "unity.unity-debug-3.0.2/"
+
+dap.adapters.unity = {
+  type = 'executable',
+  command = 'mono',
+  args = { unity_path .. "bin/UnityDebug.exe" },
+  name = 'unity'
+}
+dap.configurations.cs = {
+  {
+    name = "Unity Editor",
+    type = "unity",
+    request = "launch",
+    path = "Library/EditorInstance.json",
+    __exceptionOptions = {},
+  }
+}
+
+-- omnisharp
+local pid = vim.fn.getpid()
+local omnisharp_bin = "/home/simon/.local/bin/OmniSharp"
+require'lspconfig'.omnisharp.setup{
+  cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) };
+}
 
 -- rust
 local opts = {
@@ -277,9 +347,17 @@ vnoremap ; :
 vnoremap : ;
 nnoremap <leader>w :Bclose<cr>
 nnoremap <leader>d :lua require'dapui'.toggle()<cr>
+nnoremap <leader>b :lua require'dap'.toggle_breakpoint()<cr>
 nnoremap <F2> :Lexplore<cr>
 nnoremap <F5> :lua require'dap'.continue()<cr>
 nnoremap <F9> :lua require'dap'.toggle_breakpoint()<cr>
 nnoremap <F10> :lua require'dap'.step_over()<cr>
 nnoremap <F11> :lua require'dap'.step_into()<cr>
+
+" autocomplete
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+
 

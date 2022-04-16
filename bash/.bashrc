@@ -73,6 +73,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
+    alias less='less -r'
 fi
 
 # Alias definitions.
@@ -95,8 +96,9 @@ fi
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # Golang
+go_version=1.18
 export GOPATH=$HOME/source/go
-export GOROOT=/usr/lib/go
+export GOROOT="/usr/lib/go-$go_version"
 export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:$GOPATH/bin
 

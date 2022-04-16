@@ -5,3 +5,9 @@
   editor = nvim
 [init]
 	defaultBranch = main
+[mergetool "nvim"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+[merge]
+  tool = nvim
+[mergetool]
+  prompt = false
