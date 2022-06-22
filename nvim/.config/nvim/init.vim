@@ -1,7 +1,5 @@
 " plugins
-let mpwd = '/home/simon/.config/nvim/plugged'
-
-call plug#begin(mpwd)
+call plug#begin()
   Plug 'tpope/vim-rhubarb'           " Depenency for fugitive
   Plug 'ctrlpvim/ctrlp.vim'          " Dependancy for tagbar
 
@@ -15,7 +13,8 @@ call plug#begin(mpwd)
   Plug 'neovim/nvim-lspconfig'
 
   " autocomplete
-  Plug 'prabirshrestha/asyncomplete.vim'
+  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/cmp-nvim-lsp'
   
   " themes
   Plug 'vim-airline/vim-airline'
@@ -28,7 +27,6 @@ call plug#begin(mpwd)
 
   " langs
   Plug 'simrat39/rust-tools.nvim'
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'OmniSharp/omnisharp-vim'
   Plug 'CraneStation/cranelift.vim'
 call plug#end()
@@ -51,10 +49,15 @@ set smartcase
 set clipboard=unnamedplus
 set completeopt=menu
 set encoding=utf-8
-set mouse=n
+"set mouse=n
+set laststatus=3 " global status bar
 au CursorHold * checktime
 filetype plugin on
 filetype plugin indent on
+
+" Fixes: https://github.com/neovim/neovim/issues/5990
+let $VTE_VERSION="100"
+set guicursor=
 
 " netrw
 let g:netrw_banner = 0
@@ -91,7 +94,7 @@ let g:airline_section_warning=''
 
 " omnisharp
 let g:OmniSharp_server_use_mono=1
-let g:OmniSharp_highlighting=2
+let g:OmniSharp_highlighting=3
 augroup omnisharp_commands
   autocmd!
 
@@ -129,17 +132,52 @@ augroup omnisharp_commands
   autocmd FileType cs nmap <silent> <buffer> <Leader>osp <Plug>(omnisharp_stop_server)
 augroup END
 
-" Fixes: https://github.com/neovim/neovim/issues/5990
-let $VTE_VERSION="100"
-set guicursor=
 
 lua << EOF
+-- nvim-cmp
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- lsp
-require'lspconfig'.bashls.setup{}
-require'lspconfig'.clangd.setup{}
-require'lspconfig'.gopls.setup{
-    cmd = {"gopls", "serve"},
+local nvim_lsp = require('lspconfig')
+local opts = { noremap=true, silent=true }
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+end
+
+nvim_lsp.bashls.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.clangd.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.html.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.jsonls.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.pylsp.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.rust_analyzer.setup{ on_attach = on_attach, capabilities = capabilities } 
+nvim_lsp.texlab.setup{ on_attach = on_attach, capabilities = capabilities } 
+nvim_lsp.vimls.setup{ on_attach = on_attach, capabilities = capabilities }
+nvim_lsp.yamlls.setup{ on_attach = on_attach, capabilities = capabilities }
+
+-- golang lsp
+nvim_lsp.gopls.setup{
+    on_attach = on_attach, capabilities = capabilities,
     settings = {
       gopls = {
         analyses = {
@@ -149,13 +187,45 @@ require'lspconfig'.gopls.setup{
       },
     },
 }
-require'lspconfig'.html.setup{}
-require'lspconfig'.jsonls.setup{}
-require'lspconfig'.pylsp.setup{}
-require'lspconfig'.rust_analyzer.setup{} 
-require'lspconfig'.texlab.setup{} 
-require'lspconfig'.vimls.setup{}
-require'lspconfig'.yamlls.setup{}
+
+-- unity lsp
+local pid = vim.fn.getpid()
+local omnisharp_bin = os.getenv('HOME') .. "/.cache/bin"
+nvim_lsp.omnisharp.setup{
+  on_attach = on_attach, capabilities = capabilities,
+  cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) };
+}
+
+-- nvim-cmp
+local cmp = require 'cmp'
+cmp.setup {
+  mapping = cmp.mapping.preset.insert({
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = {
+    { name = 'nvim_lsp' },
+  },
+}
 
 -- lldb
 local ext_path = os.getenv('HOME') .. '/.vscode/extensions/'
@@ -206,126 +276,55 @@ dap.configurations.cs = {
   }
 }
 
--- omnisharp
-local pid = vim.fn.getpid()
-local omnisharp_bin = "/home/simon/.local/bin/OmniSharp"
-require'lspconfig'.omnisharp.setup{
-  cmd = { omnisharp_bin, "--languageserver", "--hostPID", tostring(pid) };
-}
-
 -- rust
 local opts = {
-    tools = { -- rust-tools options
-        -- Automatically set inlay hints (type hints)
+    tools = {
         autoSetHints = true,
-
-        -- Whether to show hover actions inside the hover window
-        -- This overrides the default hover handler 
         hover_with_actions = true,
-
-        -- how to execute terminal commands
-        -- options right now: termopen / quickfix
         executor = require("rust-tools/executors").termopen,
-
         runnables = {
-            -- whether to use telescope for selection menu or not
             use_telescope = true
-
-            -- rest of the opts are forwarded to telescope
         },
-
         debuggables = {
-            -- whether to use telescope for selection menu or not
             use_telescope = true
-
-            -- rest of the opts are forwarded to telescope
         },
-
-        -- These apply to the default RustSetInlayHints command
         inlay_hints = {
-
-            -- Only show inlay hints for the current line
             only_current_line = false,
-
-            -- Event which triggers a refersh of the inlay hints.
-            -- You can make this "CursorMoved" or "CursorMoved,CursorMovedI" but
-            -- not that this may cause  higher CPU usage.
-            -- This option is only respected when only_current_line and
-            -- autoSetHints both are true.
             only_current_line_autocmd = "CursorHold",
-
-            -- wheter to show parameter hints with the inlay hints or not
             show_parameter_hints = true,
-
-            -- prefix for parameter hints
             parameter_hints_prefix = "<- ",
-
-            -- prefix for all the other hints (type, chaining)
             other_hints_prefix = "=> ",
-
-            -- whether to align to the length of the longest line in the file
             max_len_align = false,
-
-            -- padding from the left if max_len_align is true
             max_len_align_padding = 1,
-
-            -- whether to align to the extreme right or not
             right_align = false,
-
-            -- padding from the right if right_align is true
             right_align_padding = 7,
-
-            -- The color of the hints
             highlight = "Comment",
         },
-
         hover_actions = {
-            -- the border that is used for the hover window
-            -- see vim.api.nvim_open_win()
             border = {
                 {"╭", "FloatBorder"}, {"─", "FloatBorder"},
                 {"╮", "FloatBorder"}, {"│", "FloatBorder"},
                 {"╯", "FloatBorder"}, {"─", "FloatBorder"},
                 {"╰", "FloatBorder"}, {"│", "FloatBorder"}
             },
-
-            -- whether the hover action window gets automatically focused
             auto_focus = false
         },
-
-        -- settings for showing the crate graph based on graphviz and the dot
-        -- command
         crate_graph = {
-            -- Backend used for displaying the graph
-            -- see: https://graphviz.org/docs/outputs/
-            -- default: x11
             backend = "x11",
-            -- where to store the output, nil for no output stored (relative
-            -- path from pwd)
-            -- default: nil
             output = nil,
-            -- true for all crates.io and external crates, false only the local
-            -- crates
-            -- default: true
             full = true,
         }
     },
-
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-    server = {}, -- rust-analyer options
-
-    -- debugging stuff
+    server = {}, 
     dap = {
         adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path)
     }
 }
 
 require('rust-tools').setup(opts)
-
 require("dapui").setup()
 require('telescope').setup()
+
 EOF
 
 " markdown
@@ -353,11 +352,7 @@ nnoremap <F5> :lua require'dap'.continue()<cr>
 nnoremap <F9> :lua require'dap'.toggle_breakpoint()<cr>
 nnoremap <F10> :lua require'dap'.step_over()<cr>
 nnoremap <F11> :lua require'dap'.step_into()<cr>
+inoremap <C-p> <C-x><C-o>
 
 " autocomplete
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-imap <c-space> <Plug>(asyncomplete_force_refresh)
-
 
