@@ -130,3 +130,8 @@ fi
 export WASMTIME_HOME="$HOME/.wasmtime"
 export PATH="$WASMTIME_HOME/bin:$PATH"
 
+#dotnet 
+export PATH="$HOME/.dotnet:$PATH"
+export PATH="$PATH:/home/simon/.dotnet/tools"
+export DOTNET_ROOT=/home/simon/.dotnet/
+
