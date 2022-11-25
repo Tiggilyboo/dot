@@ -14,4 +14,13 @@ configs.setup({
 		enable = true,
 	},
 	indent = { enable = true, disable = { "python", "css" } },
+  text_objects = {
+    lsp_interop = {
+      enable = true,
+      peek_definition_code = {
+        ["<leader>df"] = "@function.outer",
+        ["<leader>dF"] = "@class.outer",
+      }
+    },
+  },
 })

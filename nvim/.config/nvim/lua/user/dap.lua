@@ -1,6 +1,29 @@
+local util_ok, utils = pcall(require, "user.utils")
+if not util_ok then
+  print "Unable to load dap without utils"
+  return
+end
+
 local dap_status_ok, dap = pcall(require, "dap")
 if not dap_status_ok then
   return
+end
+
+-- load launchjs configurations
+local dap_vscode_ok, dap_vscode = pcall(require, "dap.ext.vscode")
+if not dap_vscode_ok then
+  print('Unable to load dap vscode for launchjs')
+else
+  local fname = vim.fn.expand('%:r')
+  local path = utils.root_pattern '*.sln'(fname) or utils.find_git_ancestor('.')
+  if path then
+    print('Loading launchjs from ' .. path .. '/.vscode/launch.json')
+    dap_vscode.load_launchjs(path .. '/.vscode/launch.json', {
+      coreclr = { 'cs' }
+    })
+  else
+    print('Unable to find launchjs folder')
+  end
 end
 
 local dap_ui_status_ok, dapui = pcall(require, "dapui")
@@ -8,16 +31,34 @@ if not dap_ui_status_ok then
   return
 end
 
-local dap_install_status_ok, dap_install = pcall(require, "dap-install")
-if not dap_install_status_ok then
-  return
-end
 
-dap_install.setup {}
+-- setup language adapters
+dap.adapters.coreclr = {
+  type = 'executable',
+  command = vim.env.HOME .. '/.local/bin/netcoredbg.exe',
+  args= {'--interpreter=vscode'}
+}
+dap.configurations.cs = {
+  {
+    type = 'coreclr',
+    name = "launch - netcoredbg",
+    request = 'launch',
+    program = function()
+      local fname = vim.fn.expand('%:r')
+      local path = utils.root_pattern '*.sln'(fname) or utils.find_git_ancestor('.')
+      if path and utils.path.is_dir(path) then
+        local filepath = utils.path.join(path, fname .. '.dll')
+        print('Trying to open: ' .. filepath)
+        if utils.path.is_file(filepath) then
+          return filepath
+        end
+      end
 
-dap_install.config("python",{})
-dap_install.config("dnetcs", {})
--- add other configs here
+      return vim.fn.input('Path to dll', path, 'file')
+    end,
+  },
+}
+
 
 dapui.setup {
   mappings = {
@@ -28,20 +69,26 @@ dapui.setup {
     repl = "r",
     toggle = "t",
   },
-  sidebar = {
-    elements = {
-      {
-        id = "scopes",
-        size = 0.25, -- Can be float or integer > 1
+  layouts = {
+    {
+      elements = {
+        'scopes',
+        'breakpoints',
+        'stacks',
+        'watches',
       },
-      { id = "breakpoints", size = 0.25 },
+      size = 40,
+      position = 'left',
     },
-    size = 40,
-    position = "right", -- Can be "left", "right", "top", "bottom"
-  },
-  tray = {
-    elements = {},
-  },
+    {
+      elements = {
+        'repl',
+        'console',
+      },
+      size = 10,
+      position = 'bottom',
+    },
+  }
 }
 
 vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError", linehl = "", numhl = "" })
