@@ -3,20 +3,22 @@ if not status_ok then
 	return
 end
 
-if vim.fn.has('win32') then
-  local powershell_options = {
-    shell = vim.fn.executable "pwsh" and "pwsh" or "powershell",
-    shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
-    shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
-    shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
-    shellquote = "",
-    shellxquote = "",
-  }
-
-  for option, value in pairs(powershell_options) do
-    vim.opt[option] = value
-  end
-end
+--if vim.fn.has('win32') then
+--  local powershell_options = {
+--    shell = vim.fn.executable "pwsh" and "pwsh" or "powershell",
+--    shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+--    shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+--    shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+--    shellquote = "",
+--    shellxquote = "",
+--  }
+--
+--  for option, value in pairs(powershell_options) do
+--    vim.opt[option] = value
+--  end
+--else
+--  vim.opt.shell = "bash"
+--end
 
 toggleterm.setup({
 	size = 20,
@@ -29,7 +31,7 @@ toggleterm.setup({
 	persist_size = true,
 	direction = "horizontal",
 	close_on_exit = true,
-	shell = vim.o.shell,
+  --shell = vim.o.shell,
 	float_opts = {
 		border = "curved",
 	},

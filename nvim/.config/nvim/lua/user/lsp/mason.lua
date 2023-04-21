@@ -2,13 +2,13 @@ require("mason").setup()
 require("mason-lspconfig").setup();
 
 local servers = {
-  "sumneko_lua",
   "bashls",
   "jsonls",
   "yamlls",
   "omnisharp",
   "rust_analyzer",
   "gopls",
+  "pylsp",
 }
 
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")

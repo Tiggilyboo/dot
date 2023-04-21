@@ -7,12 +7,12 @@ default_border pixel 3
 floating_modifier $mod normal
 
 # start a terminal
-exec "env WAYLAND_DISPLAY="
+#exec "env WAYLAND_DISPLAY="
 bindsym $mod+Return exec alacritty
 
 # start qutebrowser
 for_window [class="(?i)pavucontrol"] floating enable
-bindsym $mod+w exec qutebrowser
+bindsym $mod+w exec firefox
 
 # kill focused window
 bindsym $mod+q kill
@@ -23,8 +23,8 @@ bindsym $mod+d exec $menu
 
 # background
 #output * bg /home/simon/wallpapers/national_park.jpg fill
-output eDP-1 scale 1 res 1920x1080
-output HDMI-1 scale 1 res 1920x1080
+#output eDP-1 scale 1 res 1920x1080
+#output HDMI-1 scale 1 res 1920x1080
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left

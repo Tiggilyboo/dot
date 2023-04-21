@@ -59,6 +59,28 @@ dap.configurations.cs = {
   },
 }
 
+dap.adapters.codelldb = {
+  type = 'server',
+  port = "${port}",
+  executable = {
+    command = vim.env.HOME .. '/.local/share/nvim/mason/packages/codelldb/codelldb',
+    args = { "--port", "${port}" },
+  }
+}
+dap.configurations.rust = {
+  {
+    name = "Debug",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input("Path to target: ", vim.fn.getcwd() .. "/", "file")
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+  },
+}
+dap.configurations.c = dap.configurations.rust
+dap.configurations.cpp = dap.configurations.rust
 
 dapui.setup {
   mappings = {
