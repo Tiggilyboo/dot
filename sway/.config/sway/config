@@ -1,6 +1,6 @@
 set $mod Mod1
 
-font xft:Hack, FontAwesome 9
+font xft:Hack, FontAwesome 10
 default_border pixel 3
 
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -17,14 +17,12 @@ bindsym $mod+w exec firefox
 # kill focused window
 bindsym $mod+q kill
 
-# start dmenu (a program launcher)
-set $menu dmenu_path | dmenu | xargs swaymsg exec
+# start tofi
+set $menu dmenu_path | tofi-run | xargs swaymsg exec --
 bindsym $mod+d exec $menu
 
 # background
-#output * bg /home/simon/wallpapers/national_park.jpg fill
-#output eDP-1 scale 1 res 1920x1080
-#output HDMI-1 scale 1 res 1920x1080
+output * bg /home/simon/Pictures/Wallpapers/plants.jpg fill
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -104,7 +102,7 @@ client.focused #222222 #222222 #FFFFFF #222222 #222222
 
 # gaps
 gaps outer 0
-gaps inner 4
+gaps inner 8
 smart_gaps on
 hide_edge_borders smart
 

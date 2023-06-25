@@ -2,7 +2,7 @@
     "layer": "top", 
     "position": "bottom", 
     "modules-left": ["sway/workspaces", "sway/mode"],
-    "modules-center": ["sway/window"],
+    "modules-center": ["custom/media"],
     "modules-right": ["pulseaudio", "bluetooth", "backlight", "network", "cpu", "memory", "temperature", "battery", "clock", "tray"],
     "sway/mode": {
         "format": "<span style=\"italic\">{}</span>"
@@ -23,8 +23,8 @@
         "device": "intel_backlight",
         "format": "{percent}% {icon}",
         "format-icons": ["",""],
-	"on-scroll-up": "brightnessctl s +1",
-	"on-scroll-down": "brightnessctl s 1-"
+        "on-scroll-up": "brightnessctl s +1",
+        "on-scroll-down": "brightnessctl s 1-"
     },
     "temperature": {
         "format": "{temperatureC}°C "
@@ -43,9 +43,18 @@
         "format-disconnected": "d/c",
         "on-click": "alacritty -e 'netctl start $(netctl list)'"
     },
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "[ \"$(bluetoothctl show | grep -oP '(?<=Powered: ).*')\" = \"yes\" ] && bluetoothctl power off || bluetoothctl power on",
+    },
     "pulseaudio": {
         "format": "{volume}% {icon}",
-        "format-bluetooth": "{volume}% {icon}",
         "format-muted": "",
         "format-icons": {
             "headphones": "",
@@ -57,7 +66,21 @@
             "default": ["", ""]
         },
         "on-click": "pavucontrol",
-        "on-scroll-up": "pamixer -i 5",
-        "on-scroll-down": "pamixer -d 5"
-    }
+        "on-scroll-up": "pamixer -i 3",
+        "on-scroll-down": "pamixer -d 3"
+    },
+    "custom/media": {
+        "format": "{icon} {}",
+        "return-type": "json",
+        "max-length": 40,
+        "format-icons": {
+            "spotify": "",
+            "default": ""
+        },
+        "escape": true,
+        "exec": "$HOME/.config/waybar/custom_modules/mediaplayer.py 2> /dev/null",
+        "on-click": "playerctl play-pause",
+        "on-scroll-up": "playerctl next",
+        "on-scroll-down": "playerctl previous"
+    },
 }
